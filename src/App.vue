@@ -9,11 +9,12 @@
                 <at-option v-for="(voice, index) in voices" :key="index" :value="index">{{ voice.name }}</at-option>
               </at-select>
             </h4>
-            <div slot="extra"><at-button type="primary" @click="speech" :disabled="selectVoice === null || inputValue === ''">Read</at-button></div>
+            <div slot="extra"><at-button type="primary" @click="speech" :disabled="selectVoice === null || inputValue === ''">Speech</at-button></div>
             <div>
-              <at-textarea v-model="inputValue" min-rows="5" max-rows="10" placeholder="Please input multiline text..."></at-textarea>
+              <at-textarea v-model="inputValue" min-rows="5" max-rows="20" placeholder="Please input multiline text..."></at-textarea>
             </div>
           </at-card>
+          <p>※１行が長文の場合は再生が途切れることがあります。適宜改行を加えることで再生できます。</p>
         </div>
       </div>
     </div>
@@ -37,12 +38,16 @@ export default class App extends Vue {
     };
   }
   public speech() {
-    const utter = new SpeechSynthesisUtterance(this.inputValue);
     if (this.selectVoice === null) {
       return;
     }
-    utter.voice = this.voices[this.selectVoice];
-    window.speechSynthesis.speak(utter);
+    window.speechSynthesis.cancel();
+    const voice = this.selectVoice;
+    this.inputValue.split(/\r\n|\r|\n/).forEach((v: string) => {
+      const utter = new SpeechSynthesisUtterance(v);
+      utter.voice = this.voices[voice];
+      window.speechSynthesis.speak(utter);
+    });
   }
 }
 </script>
@@ -54,5 +59,8 @@ export default class App extends Vue {
 }
 .row {
   margin: 0;
+}
+p {
+  padding: 1rem 0;
 }
 </style>
