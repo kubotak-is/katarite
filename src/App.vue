@@ -29,10 +29,12 @@ export default class App extends Vue {
   public selectVoice: number|null = null;
   public inputValue: string = '';
   public created() {
-    this.voices = window.speechSynthesis.getVoices();
-    if (this.voices.length === 0) {
-      alert('SpeechSynthesis API is a non-compliant browser');
-    }
+    window.speechSynthesis.onvoiceschanged = () => {
+      this.voices = window.speechSynthesis.getVoices();
+      if (this.voices.length === 0) {
+        alert('You don\'t have speechSynthesis');
+      }
+    };
   }
   public speech() {
     const utter = new SpeechSynthesisUtterance(this.inputValue);
