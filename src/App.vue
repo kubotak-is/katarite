@@ -26,7 +26,7 @@ import { Component, Vue } from 'vue-property-decorator';
 
 @Component
 export default class App extends Vue {
-  public voices: SpeechSynthesisVoice[] = [];
+  public voices: SpeechSynthesisVoice[] = window.speechSynthesis.getVoices();
   public selectVoice: number|null = null;
   public inputValue: string = '';
   public created() {
